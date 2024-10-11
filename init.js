@@ -43,6 +43,7 @@ class Quiz{
             startButton.addEventListener('click', function () {
                 self.startingPageElement.style.display = 'none'; // Hide the starting page
                 self.quizElement.style.display = 'flex'; // Show the quiz
+                self.user.score = 0; // set the user score to 0
                 self.selectCategories(); // select 3 random categories
                 self.questionsLeft = self.selectedCategories.length * 3; // number of questions equal to categories * 3
                 self.maxScore = self.selectedCategories.length * 6;
@@ -51,22 +52,27 @@ class Quiz{
 
             restartButton.addEventListener('click', function () {
                 self.quizElement.style.display = 'none'; // hide the quiz
+                self.endingPageElement.style.display = 'none' // hide the ending
                 self.startingPageElement.style.display = 'flex'; // show the starting page
                 self.allQuestions = []; // Clear questions for a new game
                 self.questionsLeft = 0; // reset questions left
                 self.currentQuestionIndex = 0; // clear question index
                 self.currentCategoryIndex = 0; // clear category index
                 self.currentDifficultyIndex = 0; // clear current difficulty index
+                self.user.score = 0; // set the user score to 0
+
             });
 
             restartButton2.addEventListener('click', function () {
                 self.quizElement.style.display = 'none'; // hide the quiz
                 self.startingPageElement.style.display = 'flex'; // show the starting page
+                self.endingPageElement.style.display = 'none'; // hide the ending
                 self.allQuestions = []; // Clear questions for a new game
                 self.questionsLeft = 0; // reset questions left
                 self.currentQuestionIndex = 0; // clear question index
                 self.currentCategoryIndex = 0; // clear category index
                 self.currentDifficultyIndex = 0; // clear current difficulty index
+                self.user.score = 0; // set the user score to 0
             });
         });
     }
@@ -84,12 +90,12 @@ class Quiz{
                 this.selectedCategories.push(category);
             }
         }
-        console.log('Selected Categories:', this.selectedCategories); // Debugging log
     }
 
     fetchQuestions(){
         const category = this.selectedCategories[this.currentCategoryIndex];
 
+        console.log("poop");
         let difficulty;
         if (this.currentDifficultyIndex === 0){
             // Get and update category title only when the current difficulty is 0
@@ -193,17 +199,22 @@ class Quiz{
     }
 
     checkAnswer(selectedAnswerIsCorrect) {
+        this.allQuestions.length === 0 || this.currentQuestionIndex >= this.allQuestions.length 
         const correctAnswer = this.allQuestions[this.currentQuestionIndex].correct_answer;
     
+        this.choices.forEach((choice) => {
+            choice.disabled = true; // Disable each button
+        });
+
         // Highlight the answers to the questions based off of correctness
         this.choices.forEach((choice) => {
             // Highlight the correct answer in green
             if (choice.textContent === correctAnswer) {
                 choice.style.backgroundColor = 'green';
                 choice.style.borderColor = 'green';
-                if (selectedAnswerIsCorrect){
+                if (selectedAnswerIsCorrect) {
                     this.user.score += this.currentDifficultyIndex + 1;
-                    this.currentDifficultyIndex ++;
+                    this.currentDifficultyIndex++;   
                 }
             }
             // Highlight the incorrect answers red
@@ -218,18 +229,18 @@ class Quiz{
             this.choices.forEach((choice) => { // reset each answer back to the original color
                 choice.style.backgroundColor = '';
                 choice.style.borderColor = '';
+                choice.disabled =false;
             });
     
             this.questionsAnsweredInCategory++; // increase number of questions answered in the given category
             this.currentQuestionIndex++; // move to next question
-            this.questionsLeft--; // decrase number of questions left
+            this.questionsLeft--; // decrease number of questions left
     
             if (this.currentQuestionIndex < 3) { // if fewer than 3 questions were answered
                 if (this.currentQuestionIndex < this.allQuestions.length) {
-                    if (selectedAnswerIsCorrect){
-                        this.fetchQuestions(); // fetch questions for new increased difficulty in same category
-                    }
-                    else{
+                    if (selectedAnswerIsCorrect) {
+                        this.fetchQuestions(); // fetch questions for new increased difficulty in the same category
+                    } else {
                         this.loadQuestion(this.allQuestions[this.currentQuestionIndex]); // get next question
                     }
                 }
@@ -245,6 +256,22 @@ class Quiz{
             }
         }, 3000); // lasts for 3 seconds
     }
+    
+
+    lockButtons() {
+        buttons.forEach(button => {
+            button.disabled = true; // Disable the button
+            button.classList.add('locked'); // Add CSS class for styling
+        });
+    }
+
+    unlockButtons() {
+        buttons.forEach(button => {
+            button.disabled = false; // Enable the button
+            button.classList.remove('locked'); // Remove CSS class for styling
+        });
+    }
+
     
     updateScore() {
         document.getElementById('score').textContent = `${this.user.score} / ${this.maxScore}`;

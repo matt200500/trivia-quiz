@@ -263,12 +263,12 @@ body {
 
 /*------------------------- FOR RESTART BUTTON ---------------------------------*/
 
-#restart{
+#restart, #restart2{
     background-color:#ff0000; /*get background color of object it is in as its background*/
     border: 2px solid #ff0000; /*adds a border*/
 }
 
-#restart:hover{
+#restart:hover, #restart2:hover{
     background-color: #ffffff; /* change border, background, and color on hover*/
     border: 2px solid #ffffff;
     color:#101b27;
