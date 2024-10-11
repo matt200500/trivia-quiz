@@ -257,22 +257,6 @@ class Quiz{
         }, 3000); // lasts for 3 seconds
     }
     
-
-    lockButtons() {
-        buttons.forEach(button => {
-            button.disabled = true; // Disable the button
-            button.classList.add('locked'); // Add CSS class for styling
-        });
-    }
-
-    unlockButtons() {
-        buttons.forEach(button => {
-            button.disabled = false; // Enable the button
-            button.classList.remove('locked'); // Remove CSS class for styling
-        });
-    }
-
-    
     updateScore() {
         document.getElementById('score').textContent = `${this.user.score} / ${this.maxScore}`;
     }
