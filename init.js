@@ -95,7 +95,6 @@ class Quiz{
     fetchQuestions(){
         const category = this.selectedCategories[this.currentCategoryIndex];
 
-        console.log("poop");
         let difficulty;
         if (this.currentDifficultyIndex === 0){
             // Get and update category title only when the current difficulty is 0
@@ -177,7 +176,6 @@ class Quiz{
 
         // Changes the text and color for the difficulty
         this.difficultyElement.textContent = questionData.difficulty.charAt(0).toUpperCase() + questionData.difficulty.slice(1);
-        console.log('Difficulty:', questionData.difficulty); // Debugging log
 
         if (questionData.difficulty == 'easy'){ //make the background green
             this.difficultyElement.style.backgroundColor = '#00ff37';
