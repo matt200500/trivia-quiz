@@ -268,7 +268,7 @@ body {
     border: 2px solid #ff0000; /*adds a border*/
 }
 
-#restart:hover {
+#restart:hover{
     background-color: #ffffff; /* change border, background, and color on hover*/
     border: 2px solid #ffffff;
     color:#101b27;

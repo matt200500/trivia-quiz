@@ -21,14 +21,15 @@ class Quiz{
         this.questionElement = document.getElementById('question'); // gets the question element by ID
         this.difficultyElement = document.getElementById('difficulty'); // Gets the difficulty element by ID
         this.choices = document.querySelectorAll('.quizbutton'); // get the buttons for the quiz by the class 
-        this.restart = document.getElementById('restart'); // get restart button
         this.questionsLeft = 0; // number of remaining questions
         this.allQuestions = [];
+        this.maxScore = 0; // max score a user can get
         this.currentQuestionIndex = 0;
         this.currentCategoryIndex = 0; // Index of what category we are currently in according to our array of categories
         this.selectedCategories = []; // list of categories chosen
         this.currentDifficultyIndex = 0;
         this.questionsAnsweredInCategory = 0;
+        this.user = new User(0);  // create a new user with a score of 0
         this.bindEvents();
     }
 
@@ -37,19 +38,30 @@ class Quiz{
         document.addEventListener('DOMContentLoaded', function () {
             const startButton = document.getElementById('start'); // get start button from its ID
             const restartButton = document.getElementById('restart'); // get restart button from its ID
+            const restartButton2 = document.getElementById('restart2'); //get restart button on ending page by its ID
 
             startButton.addEventListener('click', function () {
                 self.startingPageElement.style.display = 'none'; // Hide the starting page
                 self.quizElement.style.display = 'flex'; // Show the quiz
                 self.selectCategories(); // select 3 random categories
                 self.questionsLeft = self.selectedCategories.length * 3; // number of questions equal to categories * 3
+                self.maxScore = self.selectedCategories.length * 6;
                 self.fetchQuestions(); // fetch the questions
             });
 
             restartButton.addEventListener('click', function () {
                 self.quizElement.style.display = 'none'; // hide the quiz
                 self.startingPageElement.style.display = 'flex'; // show the starting page
-                self.restart.style.display = 'none'; //hide restart button
+                self.allQuestions = []; // Clear questions for a new game
+                self.questionsLeft = 0; // reset questions left
+                self.currentQuestionIndex = 0; // clear question index
+                self.currentCategoryIndex = 0; // clear category index
+                self.currentDifficultyIndex = 0; // clear current difficulty index
+            });
+
+            restartButton2.addEventListener('click', function () {
+                self.quizElement.style.display = 'none'; // hide the quiz
+                self.startingPageElement.style.display = 'flex'; // show the starting page
                 self.allQuestions = []; // Clear questions for a new game
                 self.questionsLeft = 0; // reset questions left
                 self.currentQuestionIndex = 0; // clear question index
@@ -78,12 +90,11 @@ class Quiz{
     fetchQuestions(){
         const category = this.selectedCategories[this.currentCategoryIndex];
 
-        // Get and update category title
-        const categoryTitle = this.getCategoryTitle(category);
-        document.getElementById('category').textContent = categoryTitle;
-
         let difficulty;
         if (this.currentDifficultyIndex === 0){
+            // Get and update category title only when the current difficulty is 0
+            const categoryTitle = this.getCategoryTitle(category);
+            document.getElementById('category').textContent = categoryTitle;
             difficulty = 'easy';
         }
         else if (this.currentDifficultyIndex === 1) {
@@ -104,7 +115,9 @@ class Quiz{
             })
             .then(data => {
                 this.allQuestions = data.results; // Use arrow function to maintain context
-                this.currentQuestionIndex = 0; // Reset question index
+                if (this.currentDifficultyIndex === 0 ) {
+                    this.currentQuestionIndex = 0; // Reset question index
+                }
                 this.loadQuestion(this.allQuestions[this.currentQuestionIndex]); // Load the first question
             })
             .catch(error => {
@@ -149,23 +162,26 @@ class Quiz{
 
         shuffleArray(answers);
 
-        document.getElementById('questionsleft').textContent = this.questionsLeft;
+        document.getElementById('questionsleft').textContent = this.questionsLeft; // update the questions left
+        this.updateScore(); //update the score
+
 
         // Get and update the question
         document.getElementById('question').textContent = questionText;
 
         // Changes the text and color for the difficulty
         this.difficultyElement.textContent = questionData.difficulty.charAt(0).toUpperCase() + questionData.difficulty.slice(1);
+        console.log('Difficulty:', questionData.difficulty); // Debugging log
 
-        if (questionData.difficulty === 'easy'){ //make the background green
+        if (questionData.difficulty == 'easy'){ //make the background green
             this.difficultyElement.style.backgroundColor = '#00ff37';
             this.difficultyElement.style.borderColor = '#00ff37';
         }
-        else if (questionData.difficulty ==='medium') { //makes the background yellow
+        else if (questionData.difficulty =='medium') { //makes the background yellow
             this.difficultyElement.style.backgroundColor = '#e5ff00';
             this.difficultyElement.style.borderColor = '#e5ff00';
         }
-        else if(questionData.difficulty === 'hard') { //makes the background red
+        else if(questionData.difficulty == 'hard') { //makes the background red
             this.difficultyElement.style.backgroundColor = '#dd0101';
             this.difficultyElement.style.borderColor = '#dd0101';
         }
@@ -183,9 +199,12 @@ class Quiz{
         this.choices.forEach((choice) => {
             // Highlight the correct answer in green
             if (choice.textContent === correctAnswer) {
-
                 choice.style.backgroundColor = 'green';
                 choice.style.borderColor = 'green';
+                if (selectedAnswerIsCorrect){
+                    this.user.score += this.currentDifficultyIndex + 1;
+                    this.currentDifficultyIndex ++;
+                }
             }
             // Highlight the incorrect answers red
             if (!selectedAnswerIsCorrect && choice.style.backgroundColor === '') {
@@ -207,7 +226,12 @@ class Quiz{
     
             if (this.currentQuestionIndex < 3) { // if fewer than 3 questions were answered
                 if (this.currentQuestionIndex < this.allQuestions.length) {
-                    this.loadQuestion(this.allQuestions[this.currentQuestionIndex]); // get next question
+                    if (selectedAnswerIsCorrect){
+                        this.fetchQuestions(); // fetch questions for new increased difficulty in same category
+                    }
+                    else{
+                        this.loadQuestion(this.allQuestions[this.currentQuestionIndex]); // get next question
+                    }
                 }
             } else {
                 this.questionsAnsweredInCategory = 0; // Reset the counter of questions answered in the category
@@ -222,31 +246,15 @@ class Quiz{
         }, 3000); // lasts for 3 seconds
     }
     
+    updateScore() {
+        document.getElementById('score').textContent = `${this.user.score} / ${this.maxScore}`;
+    }
+    
     endQuiz() {
+        document.getElementById('endingScore').textContent = `${this.user.score} / ${this.maxScore}`;
         this.endingPageElement.style.display = 'flex'; // Show the ending page
         this.startingPageElement.style.display = 'none'; // Hide the starting page
         this.quizElement.style.display = 'none'; // Hide the quiz
-        this.restart.style.display ='flex' //show the restart button
-    }
-    
-
-    fetchNextQuestion() {
-        // Load next question based on the current difficulty level
-        const currentDifficulty = this.currentDifficultyIndex === 0 ? 'easy' :
-                                  this.currentDifficultyIndex === 1 ? 'medium' : 'hard';
-        const nextUrl = `https://opentdb.com/api.php?amount=1&category=${this.selectedCategories[this.currentCategoryIndex]}&difficulty=${currentDifficulty}&type=multiple`;
-        fetch(nextUrl)
-            .then(response => {
-                if (!response.ok) throw new Error('Network Response error');
-                return response.json();
-            })
-            .then(data => {
-                this.allQuestions.push(data.results[0]); // Add the new question to the list
-                this.loadQuestion(this.allQuestions[this.currentQuestionIndex]);
-            })
-            .catch(error => {
-                console.error('Error fetching next question data:', error);
-            });
     }
 }
 
