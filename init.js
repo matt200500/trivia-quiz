@@ -197,6 +197,7 @@ class Quiz{
     }
 
     checkAnswer(selectedAnswerIsCorrect) {
+        this.allQuestions.length === 0 || this.currentQuestionIndex >= this.allQuestions.length 
         const correctAnswer = this.allQuestions[this.currentQuestionIndex].correct_answer;
     
         this.choices.forEach((choice) => {
