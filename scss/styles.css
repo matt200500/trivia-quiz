@@ -1,0 +1,245 @@
+body {
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    background-color: #171c22;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/*------------------------- FOR THE STARTING PAGE ---------------------------------*/
+#StartingPage{
+    display: flex;
+    flex-direction: column; /*keeps all features and content on top of eachother*/
+    background-color: #171c22;
+    justify-content:center; /*keep items in center*/
+    align-items:center; /*keep items in center*/    
+}
+
+#StartingPage h1 {
+    text-align: center;
+    padding-top: 20%;
+    padding-bottom: 10px;
+    margin-bottom: 0px;
+    margin-top: 0;
+    color: #DFD0B8; 
+    font-family: monospace;
+    font-size: clamp(2rem, calc(3vw + 1vh), 5rem); /*dynamically change font size*/
+}
+
+#StartingPage h2 {
+    text-align: center;
+    padding-bottom: 20px;
+    margin-bottom: 0px;
+    margin-top: 0;
+    color: #777777; 
+    font-family: monospace;
+    font-size: clamp(1vw, calc(3vw + 1vh), 2rem); /*dynamically change font size*/
+}
+
+.button { 
+    background-color:#00ff37; /*get background color of object it is in as its background*/
+    padding: 15px 32px; /*padding for the text*/
+    cursor: pointer;  /*changes cursor when hover over it*/
+    font-size: 20px;
+    border: 2px solid #00ff37; /*adds a border*/
+    border-radius: 20px; /*rounds the border*/
+    color:#ffffff;
+    transition: background-color 0.5s ease; /*makes transition smooth, changing background and text color*/
+    margin-right: 10px;
+    margin-bottom: 30px;
+}
+  
+.button:hover {
+    background-color: #ffff; /* change border, background, and color on hover*/
+    border: 2px solid #ffffff;
+    color:#101b27;
+}
+
+
+
+/*-------------------------------- FOR THE QUIZ ITSELF ----------------------------*/
+.quiz{
+    display: flex;
+    flex-direction: column; /*keeps all features and content on top of eachother*/
+    background-color: #171c22;
+    justify-content:center; /*keep items in center*/
+    align-items:center; /*keep items in center*/    
+    max-width: 80%;
+    text-align: center;
+    width: 100%;
+}
+
+#category {
+    text-align: center;
+    padding-bottom: 10px;
+    padding-top: 10%;
+    margin-bottom: 0px;
+    margin-top: 0;
+    color: #DFD0B8; 
+    font-family: monospace;
+    font-size: clamp(2rem, calc(3vw + 1vh), 5rem); /*dynamically change font size*/
+}
+
+
+/*Grid areas for question and difficulty */
+#question{
+    color: #aaaaaa;
+    grid-area: question;
+    font-size: clamp(1vw, calc(3vw + 1vh), 3rem); /*dynamically change font size*/
+    margin-right: 20px;
+
+}
+#difficulty{
+    grid-area: difficulty;
+    font-size: 20px;
+    padding: 10px; /*padding for the text*/
+    background-color: #00ff37;
+    border: 2px solid #01dd30; /*adds a border*/
+    text-align: center;
+    color: white;
+    width: fit-content;
+}
+
+#titleContainer {
+    align-items: center;
+    display: grid; /*grid for compnents*/
+    grid-template-columns: 1fr auto 1fr;/*make 2 colums of same size*/
+    grid-template-rows: auto;
+    grid-template-areas:
+        ". question difficulty ";
+}
+
+
+@media (max-width: 768px){
+    #titleContainer{ 
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        justify-content: center; /* Vertically center content */
+        align-items: center;     /* Horizontally center content */
+    }
+    #difficulty{
+        text-align: center;
+    }
+
+}
+
+/*------------------------- FOR QUIZ Buttons ---------------------------------*/
+
+
+/*Grid areas for answers*/
+#answer1{
+    grid-area: answer1;
+}
+
+#answer2{
+    grid-area: answer2;
+}
+
+#answer3{
+    grid-area: answer3;
+}
+
+#answer4{
+    grid-area: answer4;
+}
+
+
+.choices {
+    align-items: center;
+    display: grid; /*grid for compnents*/
+    grid-template-columns: repeat(2, 1fr);/*make 2 colums of same size*/
+    grid-template-rows: auto;
+    grid-template-areas:
+        "answer1 answer2"
+        "answer3 answer4";
+    column-gap: 10px;
+}
+
+@media (max-width: 768px){
+    .choices {
+        display: grid; /*grid for compnents*/
+        grid-template-columns: 1fr; /*make grid 1 column for mobile*/
+        grid-template-rows: auto;
+        grid-template-areas:
+            "answer1 "
+            "answer2"
+            "answer3"
+            "answer4";
+    }
+}
+
+.quizbutton {
+    background-color:#707070; /*get background color of object it is in as its background*/
+    border: 2px solid #707070; /*adds a border*/
+    color: rgb(255, 255, 255);
+}
+
+
+.quizbutton:hover {
+    background-color: #ffff; /* change border, background, and color on hover*/
+    border: 2px solid #ffffff;
+    color:#101b27;
+}
+
+
+
+/*------------------------------ FOR THE PLAYER STATS ------------------------------*/
+
+#totalscore{
+    grid-area: totalscore;
+}
+
+#score{
+    grid-area: score;
+}
+
+#progress{
+    grid-area: progress;
+}
+
+#questionsleft{
+    grid-area: questionsleft;
+}
+
+
+
+#Stats h1{
+    color: #DFD0B8;
+    font-size: clamp(1vw, calc(3vw + 1vh), 2rem); /*dynamically change font size*/
+}
+
+#Stats p {
+    color: #707070;
+    font-size: clamp(1vw, calc(3vw + 1vh), 2rem); /*dynamically change font size*/
+    font-weight: bold;
+}
+
+#Stats {
+    align-items: center;
+    display: grid; /*grid for compnents*/
+    grid-template-columns: repeat(2, 1fr);/*make 2 colums of same size*/
+    grid-template-rows: auto;
+    grid-template-areas:
+        "totalscore progress"
+        "score questionsleft";
+    column-gap: 50px;
+}
+
+
+
+
+/*------------------------- FOR RESTART BUTTON ---------------------------------*/
+
+#restart{
+    background-color:#ff0000; /*get background color of object it is in as its background*/
+    border: 2px solid #ff0000; /*adds a border*/
+}
+
+#restart:hover {
+    background-color: #ffffff; /* change border, background, and color on hover*/
+    border: 2px solid #ffffff;
+    color:#101b27;
+}
